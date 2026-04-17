@@ -1,0 +1,28 @@
+# Copy to .pii-patterns.local and fill in your own identifiers.
+# .pii-patterns.local is gitignored — safe to store names/handles here.
+#
+# Format: one pattern per line, case-insensitive regex.
+#         pattern|human-readable-reason
+#
+# Lines starting with # and blank lines are ignored.
+#
+# Add YOUR OWN private identifiers that must never appear in commits:
+
+# --- personal name fragments (example placeholders — replace with yours) ---
+# yourfirstname|personal first-name fragment
+# yourlastname|personal last-name fragment
+
+# --- your primary GitHub/GitLab handle (if it should NOT appear in code) ---
+# \byourhandle\b|personal handle
+
+# --- private project names you're NOT publishing here ---
+# \bproject-alpha\b|private project name
+# \bproject-beta\b|private project name
+
+# --- your org's private infrastructure (replace with real patterns) ---
+# internal-service\.example\.com|private infra hostname
+# \b[A-Z]{4,10}-[0-9]{4,8}\b|internal ticket ID
+
+# --- keep this file uncommitted ---
+# Confirm .pii-patterns.local is in .gitignore. Running
+# `grep pii-patterns .gitignore` should return a match.

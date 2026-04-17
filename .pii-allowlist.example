@@ -1,0 +1,9 @@
+# Copy to .pii-allowlist and fill in strings allowed in README/CONTRIBUTING/LICENSE.
+# .pii-allowlist is gitignored.
+#
+# Format: one exact substring per line (not regex).
+# Purpose: permit specific attribution tokens in docs while still blocking
+# them in code.
+#
+# Example (if you wanted your GitHub handle to appear in the clone URL):
+# yourhandle

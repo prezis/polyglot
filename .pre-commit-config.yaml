@@ -1,0 +1,29 @@
+# polyglot pre-commit config
+# Install: pip install pre-commit && pre-commit install
+# Or use the bundled: bash scripts/install-git-hooks.sh
+repos:
+  - repo: local
+    hooks:
+      - id: polyglot-pii-scan
+        name: polyglot PII scan
+        entry: bash scripts/pii-scan.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        args: ["--config=.gitleaks.toml"]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-json
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace

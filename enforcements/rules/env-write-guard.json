@@ -1,0 +1,11 @@
+{
+  "name": "Env File Write Guard",
+  "directive": "Never write secrets to .env via Write/Edit/NotebookEdit",
+  "trigger": { "tool": "Write|Edit|NotebookEdit" },
+  "condition": {
+    "type": "block_file_pattern",
+    "patterns": ["*.env", "*.env.*", "*/.env", "*/.env.*", "*/.ENV", "*/.Env"]
+  },
+  "action": "block",
+  "message": "BLOCKED: direct write to .env via Claude tool. Secrets in .env must be rotated manually, not overwritten."
+}

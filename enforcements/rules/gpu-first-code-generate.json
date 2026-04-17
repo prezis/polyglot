@@ -1,0 +1,15 @@
+{
+  "name": "GPU-First Code Generation",
+  "directive": "Consider local_code_generate for drafts @enforced",
+  "trigger": {
+    "tool": "Write",
+    "args_filter": "\\.(py|js|ts|go|rs|java|c|cpp|sh)"
+  },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "mcp__local-ai__local_code_generate"
+  },
+  "action": "block",
+  "bypass_env": "CLAUDE_FORCE",
+  "message": "BLOCKED: code Write without prior local_code_generate. Call it first — FREE on RTX 5090 (see CLAUDE.md §GPU-First). Override with CLAUDE_FORCE=1 only for <10-line surgical edits."
+}

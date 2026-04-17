@@ -1,0 +1,60 @@
+{
+  "_comment": "Tier 1 — +text translation via local LLM (Bielik for PL, or equivalent). Requires 12GB+ GPU VRAM.",
+  "_install_merge_into": "~/.claude/settings.json",
+  "_requires_ollama_models": [
+    "speakleash/bielik-11b-v3.0-instruct:Q5_K_M"
+  ],
+  "_mcp_servers": {
+    "polyglot": {
+      "command": "python3",
+      "args": ["${POLYGLOT_ROOT}/mcp-server/server.py"],
+      "env": {
+        "POLYGLOT_TRANSLATE_MODEL": "speakleash/bielik-11b-v3.0-instruct:Q5_K_M"
+      }
+    }
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} POLYGLOT_TRANSLATE_TOOL=mcp__polyglot__translate python3 ${POLYGLOT_ROOT}/enforcements/prompt-guard.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${POLYGLOT_ROOT}/enforcements/engine.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} bash ${POLYGLOT_ROOT}/enforcements/post-compact.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} python3 ${POLYGLOT_ROOT}/enforcements/stop-violation.py"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "NotebookEdit Code-Gen Guard",
+  "directive": "NotebookEdit writes code cells — same rules as Write(.py)",
+  "trigger": { "tool": "NotebookEdit" },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "mcp__local-ai__local_code_generate"
+  },
+  "action": "block",
+  "bypass_env": "CLAUDE_FORCE",
+  "message": "BLOCKED: NotebookEdit writing code cell without prior local_code_generate. Parallel of Write(.py) rule. Call local_code_generate first — FREE on GPU."
+}

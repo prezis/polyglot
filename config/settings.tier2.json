@@ -1,0 +1,62 @@
+{
+  "_comment": "Tier 2 — +vision. Adds Qwen2.5-VL for screenshot OCR + translate. Requires 24GB+ GPU VRAM.",
+  "_install_merge_into": "~/.claude/settings.json",
+  "_requires_ollama_models": [
+    "speakleash/bielik-11b-v3.0-instruct:Q5_K_M",
+    "qwen2.5vl:7b"
+  ],
+  "_mcp_servers": {
+    "polyglot": {
+      "command": "python3",
+      "args": ["${POLYGLOT_ROOT}/mcp-server/server.py"],
+      "env": {
+        "POLYGLOT_TRANSLATE_MODEL": "speakleash/bielik-11b-v3.0-instruct:Q5_K_M",
+        "POLYGLOT_VISION_MODEL": "qwen2.5vl:7b"
+      }
+    }
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} POLYGLOT_TRANSLATE_TOOL=mcp__polyglot__translate POLYGLOT_VISION_TOOL=mcp__polyglot__vision python3 ${POLYGLOT_ROOT}/enforcements/prompt-guard.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${POLYGLOT_ROOT}/enforcements/engine.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} bash ${POLYGLOT_ROOT}/enforcements/post-compact.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} python3 ${POLYGLOT_ROOT}/enforcements/stop-violation.py"
+          }
+        ]
+      }
+    ]
+  }
+}

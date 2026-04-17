@@ -1,0 +1,11 @@
+{
+  "name": "Removal Proposal Guard",
+  "directive": "Never silently delete — propose first per CLAUDE.md §Removal Discipline",
+  "trigger": {
+    "tool": "Edit|Write|NotebookEdit",
+    "args_filter": "CLAUDE\\.md|memory/.*\\.md|settings\\.(json|local\\.json)|enforcements/.*\\.json|ollama-pinned-digests\\.json|\\.(env|mcp)\\.json|registry\\.md|INDEX\\.md"
+  },
+  "condition": { "type": "block_tool" },
+  "action": "warn",
+  "message": "Removal-sensitive file. If this edit REMOVES config/memory/deps: STOP and propose first per CLAUDE.md §Removal Discipline (evidence, replacement, rollback). If purely additive or typo fix: proceed. Preferred: mark 'status: deprecated_<date>' rather than delete."
+}

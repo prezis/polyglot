@@ -1,0 +1,48 @@
+{
+  "_comment": "Tier 0 — baseline. Full anti-bypass enforcement (PreToolUse engine + language detection + Stop scanner + post-compact). No GPU required. Zero translation payload — Claude translates on its own dime if needed.",
+  "_install_merge_into": "~/.claude/settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} python3 ${POLYGLOT_ROOT}/enforcements/prompt-guard.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${POLYGLOT_ROOT}/enforcements/engine.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} bash ${POLYGLOT_ROOT}/enforcements/post-compact.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "POLYGLOT_LANGS=${POLYGLOT_LANGS:-pl} python3 ${POLYGLOT_ROOT}/enforcements/stop-violation.py"
+          }
+        ]
+      }
+    ]
+  }
+}

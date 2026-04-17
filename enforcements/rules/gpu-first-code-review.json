@@ -1,0 +1,14 @@
+{
+  "name": "GPU-First Code Review",
+  "directive": "Before ANY code review, FIRST call local_code_review @enforced",
+  "trigger": {
+    "tool": "Agent",
+    "args_filter": "code.?review|review.?code|security.?review|code-reviewer|security-reviewer|superpowers:code-reviewer"
+  },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "mcp__local-ai__local_code_review"
+  },
+  "action": "block",
+  "message": "Run local_code_review (FREE on GPU) BEFORE spawning a review Agent. The local model catches 60% of bugs at zero cost."
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Bash Code-Gen Heredoc Guard",
+  "directive": "Writing code via Bash heredoc/redirect still requires local_code_generate",
+  "trigger": {
+    "tool": "Bash",
+    "args_filter": "(cat|tee|printf|echo|python3?|node)\\s*[^|&;]*>+\\s*['\"]?(?![^'\"\\s]*[/\\\\]\\.claude[/\\\\])[^'\"\\s]+\\.(py|js|ts|jsx|tsx|go|rs|java|c|cpp|h|sh|bash|rb|lua|ex|exs|kt|pine)(\\s|$|['\"]|`)"
+  },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "mcp__local-ai__local_code_generate"
+  },
+  "action": "block",
+  "bypass_env": "CLAUDE_FORCE",
+  "message": "BLOCKED: writing code via Bash redirect without prior local_code_generate. Closes the Write/Edit\u2192Bash bypass (issue #29709). Call mcp__local-ai__local_code_generate first — FREE on RTX 5090."
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Bash Command Safety",
+  "directive": "Block dangerous Bash commands: force-push to main/master, catastrophic deletes, sudo, .env writes, curl/wget piped to shell",
+  "trigger": {
+    "tool": "Bash"
+  },
+  "condition": {
+    "type": "block_args",
+    "pattern": "git\\s+push\\s+.*(-f|--force).*\\b(main|master)\\b|git\\s+push\\s+.*\\b(main|master)\\b.*(-f|--force)|\\brm\\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r)[a-zA-Z]*\\s+(/\\s*[\",]|/\\s*$|~/|~\\s*[\",]|\\$HOME)|\\bsudo\\b|\\b(echo|printf)\\b.*\\.env|>{1,2}\\s*\\S*\\.env\\b|\\btee\\b.*\\.env|cat\\s*<<.*>.*\\.env|\\b(curl|wget)\\b.*?\\|\\s*(?:/bin/)?(bash|sh|zsh|fish|python3?|node)(?![-_/\\w])"
+  },
+  "action": "block",
+  "message": "Dangerous Bash command blocked. Prohibited: force-push to main/master, rm -rf / or ~, sudo, writing to .env, curl|bash / wget|sh (remote code exec). Defense-in-depth alongside settings.json deny rules."
+}

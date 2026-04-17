@@ -1,0 +1,14 @@
+{
+  "name": "GPU-First Vision",
+  "directive": "Before ANY image access, FIRST call local_vision (enforced across Read/Glob/Grep/Bash)",
+  "trigger": {
+    "tool": "Read|Glob|Grep|Bash",
+    "args_filter": "\\.(png|jpg|jpeg|gif|webp|bmp)\\b|screenshot|Screenshot from"
+  },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "mcp__local-ai__local_vision"
+  },
+  "action": "block",
+  "message": "BLOCKED: image access without prior mcp__local-ai__local_vision call. Covers Read/Glob/Grep/Bash (closes bypass vectors). FREE on RTX 5090."
+}

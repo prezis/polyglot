@@ -1,0 +1,57 @@
+# gitleaks config for polyglot — runs in pre-commit + CI
+title = "polyglot secret & PII scan"
+
+# Extend default ruleset with polyglot-specific patterns
+[extend]
+useDefault = true
+
+# --- Custom rules (project-specific PII / path / identifier leakage) ---
+
+[[rules]]
+id = "abs-home-path-leak"
+description = "Hardcoded user home path — must use $HOME or env var"
+regex = '''/home/[a-z][a-z0-9_-]{2,}/|/Users/[A-Za-z][A-Za-z0-9_-]{2,}/'''
+tags = ["pii", "path-leak"]
+
+[[rules]]
+id = "solana-wallet-address"
+description = "Solana wallet address (base58, 32-44 chars)"
+regex = '''\b[1-9A-HJ-NP-Za-km-z]{32,44}\b'''
+tags = ["wallet", "crypto"]
+[rules.allowlist]
+regexes = [
+    '''0{10,}''',
+    '''[a-zA-Z]{40,}''',
+]
+
+[[rules]]
+id = "eth-wallet-address"
+description = "Ethereum / EVM wallet address"
+regex = '''\b0x[a-fA-F0-9]{40}\b'''
+tags = ["wallet", "crypto"]
+
+[[rules]]
+id = "private-key-bs58"
+description = "Likely Solana private key (base58, 86-90 chars)"
+regex = '''\b[1-9A-HJ-NP-Za-km-z]{86,90}\b'''
+tags = ["wallet", "private-key"]
+
+[[rules]]
+id = "helius-url"
+description = "Helius RPC endpoint with API key"
+regex = '''https?://[a-z-]+\.helius-rpc\.com/\?api-key=[A-Za-z0-9-]+'''
+tags = ["api-key"]
+
+[[rules]]
+id = "telegram-bot-token"
+description = "Telegram bot token"
+regex = '''\b\d{8,10}:[A-Za-z0-9_-]{35}\b'''
+tags = ["api-key"]
+
+# --- Allowlist (paths we deliberately do NOT scan) ---
+[allowlist]
+description = "Vendored binary / fixture files"
+paths = [
+    '''tests/fixtures/.*\.jsonl$''',
+    '''docs/screenshots/.*''',
+]

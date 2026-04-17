@@ -1,0 +1,15 @@
+{
+  "name": "Research Before Build Dispatch",
+  "directive": "80/20 rule: research agents FIRST, build agents SECOND. ADOPT > EXTEND > BUILD.",
+  "trigger": {
+    "tool": "Agent",
+    "args_filter": "\"description\"\\s*:\\s*\"(implement|build|create|write|scaffold|deploy|migrate|refactor|add|fix|commit)\\b"
+  },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "Agent|Grep|WebFetch|WebSearch|Read|mcp__qmd__search|mcp__qmd__deep_search",
+    "args_pattern": "research|investigate|analyze|compare|evaluate|survey|search|find existing|explore|audit|knowledge|wiki|github"
+  },
+  "action": "warn",
+  "message": "BUILD dispatch without prior research signal. 80/20 rule: ADOPT > EXTEND > BUILD. If this IS research, phrase the agent description as research/audit/investigate — not implement/build/create/write."
+}

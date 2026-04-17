@@ -1,0 +1,12 @@
+{
+  "name": "Memory Context Check",
+  "directive": "Read INDEX.md or search QMD before modifying project files",
+  "trigger": { "tool": "Write|Edit" },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "Read",
+    "args_pattern": "INDEX.md"
+  },
+  "action": "warn",
+  "message": "Consider reading INDEX.md for project context before making changes."
+}

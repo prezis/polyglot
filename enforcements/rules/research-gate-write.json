@@ -1,0 +1,15 @@
+{
+  "name": "Research Gate - Code Write",
+  "directive": "Search codebase before writing new code files",
+  "trigger": {
+    "tool": "Write",
+    "args_filter": "\\.(py|js|ts|go|rs|java|sh|pine)$"
+  },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "Grep",
+    "args_pattern": ""
+  },
+  "action": "warn",
+  "message": "Writing code without prior codebase search. Did you Grep for existing solutions first? ADOPT > EXTEND > BUILD."
+}

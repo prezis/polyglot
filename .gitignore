@@ -1,0 +1,35 @@
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Local dev secrets — should NEVER exist in this repo; .gitignore is belt+suspenders
+.env
+.env.*
+secrets/
+*.key
+*.pem
+credentials.json
+*.local.json
+
+# PII scanner local config (contributor-specific identifiers — never commit these)
+.pii-patterns.local
+.pii-allowlist
+
+# Sessions / transcripts / user data — never belongs here
+session-logs/
+transcripts/
+*.jsonl
+user-data/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/

@@ -1,0 +1,16 @@
+{
+  "name": "GPU-First WebSearch",
+  "directive": "Check local knowledge base BEFORE web/browser calls",
+  "_template_note": "Edit 'args_pattern' to match your knowledge-base path. Default matches common folder names (knowledge/wiki/notes/docs). If you don't maintain a local wiki, set action to 'warn' or delete this rule.",
+  "trigger": {
+    "tool": "WebSearch|WebFetch|mcp__playwright-local__browser_navigate|mcp__playwright-local__browser_snapshot|mcp__plugin_playwright_playwright__browser_navigate"
+  },
+  "condition": {
+    "type": "require_prior_tool",
+    "tool": "Grep",
+    "args_pattern": "knowledge|wiki|notes|docs"
+  },
+  "action": "warn",
+  "bypass_env": "CLAUDE_FORCE",
+  "message": "WEB CALL BEFORE LOCAL SEARCH: run Grep against your local knowledge base first (configure args_pattern in this rule). For social media (X/Twitter/YouTube) prefer mcp__polyglot__scrape on local GPU. Override with CLAUDE_FORCE=1 if topic confirmed not in local notes."
+}
