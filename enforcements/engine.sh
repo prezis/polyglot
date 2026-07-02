@@ -58,7 +58,7 @@ raw_input = os.environ.get("ENFORCE_INPUT", "{}")
 try:
     parsed = json.loads(raw_input)
 except (json.JSONDecodeError, ValueError):
-    print(json.dumps({"hookSpecificOutput": {"permissionDecision": "deny", "permissionDecisionReason": "enforce: malformed hook input, failing closed"}}))
+    print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "enforce: malformed hook input, failing closed"}}))
     sys.exit(0)
 
 tool_name = parsed.get("tool_name", "")
@@ -260,7 +260,7 @@ for rule in rules:
             warn_messages.append(full_msg)  # v3.1: accumulate, not overwrite
 
 if final_action == "block":
-    print(json.dumps({"hookSpecificOutput": {"permissionDecision": "deny", "permissionDecisionReason": block_message}}))
+    print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": block_message}}))
 elif warn_messages:
     # v3.1: ALL warns emitted, via top-level systemMessage (high salience per Anthropic docs)
     joined = " | ".join(warn_messages)
