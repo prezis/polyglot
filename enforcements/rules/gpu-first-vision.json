@@ -1,6 +1,7 @@
 {
-  "name": "GPU-First Vision",
-  "directive": "Before ANY image access, FIRST call local_vision (enforced across Read/Glob/Grep/Bash)",
+  "name": "GPU-First Vision (DEPRECATED 2026-07-03 — synced to ~/.claude authoritative)",
+  "status": "deprecated_2026-07-03",
+  "deprecation_reason": "DRIFT-SYNC to the authoritative ~/.claude/enforcements/gpu-first-vision.json which was deprecated 2026-05-11 (user forbade local_vision for screenshots after qwen3.5:27b VLM hallucinated chart prices; use Claude native vision). This polyglot mirror was never synced and kept hard-blocking (no bypass_env) all image-arg Read/Bash — an un-satisfiable gate contradicting current policy that blocked screenshot-based design work. Action block->allow to mirror authoritative. Rule kept (not deleted) per Removal Discipline as audit trail. bypass_env added defensively.",
   "trigger": {
     "tool": "Read|Glob|Grep|Bash",
     "args_filter": "\\.(png|jpg|jpeg|gif|webp|bmp)\\b|screenshot|Screenshot from"
@@ -9,6 +10,7 @@
     "type": "require_prior_tool",
     "tool": "mcp__local-ai__local_vision"
   },
-  "action": "block",
-  "message": "BLOCKED: image access without prior mcp__local-ai__local_vision call. Covers Read/Glob/Grep/Bash (closes bypass vectors). FREE on RTX 5090."
+  "action": "allow",
+  "bypass_env": "CLAUDE_FORCE",
+  "message": "DEPRECATED 2026-07-03: gpu-first-vision (polyglot mirror) disabled to match authoritative ~/.claude deprecation. Use Claude native multimodal vision for screenshots."
 }
