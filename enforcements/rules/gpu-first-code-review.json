@@ -1,14 +1,18 @@
 {
   "name": "GPU-First Code Review",
-  "directive": "Before ANY code review, FIRST call local_code_review @enforced",
+  "status": "SUPERSEDED_by_compute_routing_2026-06-16 (operator re-confirmed 2026-07-04) — MIRROR of ~/.claude/enforcements/gpu-first-code-review.json. Code review defaults to an independent Opus 4.8 window (opus-code-reviewer); local_code_review is the cost-constrained fallback. Was action:block (this polyglot mirror was missed in the first flip → still hard-blocked Opus review). Kept per Removal Discipline.",
+  "directive": "Compute Routing 2026-06-16 SUPERSEDES GPU-First: prefer opus-code-reviewer over local 30b review",
   "trigger": {
     "tool": "Agent",
     "args_filter": "code.?review|review.?code|security.?review|code-reviewer|security-reviewer|superpowers:code-reviewer"
   },
   "condition": {
     "type": "require_prior_tool",
-    "tool": "mcp__local-ai__local_code_review"
+    "tool": "mcp__local-ai__local_code_review|Agent",
+    "args_pattern": "opus-code-reviewer|local_code_review",
+    "max_age_seconds": 3600
   },
-  "action": "block",
-  "message": "Run local_code_review (FREE on GPU) BEFORE spawning a review Agent. The local model catches 60% of bugs at zero cost."
+  "action": "warn",
+  "bypass_env": "CLAUDE_FORCE",
+  "message": "Review routing (Compute Routing 2026-06-16, operator-reconfirmed 2026-07-04): opus-code-reviewer (independent Opus 4.8 window) is the DEFAULT for code review — NOT the local 30b GPU. Non-blocking reminder."
 }
