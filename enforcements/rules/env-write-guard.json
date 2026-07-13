@@ -6,6 +6,6 @@
     "type": "block_file_pattern",
     "patterns": ["*.env", "*.env.*", "*/.env", "*/.env.*", "*/.ENV", "*/.Env"]
   },
-  "action": "block",
-  "message": "BLOCKED: direct write to .env via Claude tool. Secrets in .env must be rotated manually, not overwritten."
+  "action": "warn",
+  "message": "WARN: editing a .env. Operator directive 2026-07-10 (verbatim: \"ja tobie wkleja, api ty dodajesz, nie commitujesz, na tym polega nasza bezpieczna droga\") downgraded block->warn — adding operator-pasted keys is the agent's job. STILL BINDING: (1) .env must stay gitignored — NEVER git-add/commit it; (2) NEVER echo secret VALUES to chat or logs; (3) APPEND a new numbered slot, never overwrite an existing key; (4) prefer the Edit tool to append after the provider's last key. (This is the polyglot mirror of ~/.claude/enforcements/env-write-guard.json — kept in sync.)"
 }
