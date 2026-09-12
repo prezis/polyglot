@@ -1,12 +1,14 @@
 {
   "name": "NotebookEdit Code-Gen Guard",
-  "directive": "NotebookEdit writes code cells — same rules as Write(.py)",
-  "trigger": { "tool": "NotebookEdit" },
+  "directive": "NotebookEdit writes code cells through 'new_source', which no content_guard reads -> use Write/Edit or an independent agent.",
+  "trigger": {
+    "tool": "NotebookEdit"
+  },
   "condition": {
-    "type": "require_prior_tool",
-    "tool": "mcp__local-ai__local_code_generate"
+    "type": "block_tool"
   },
   "action": "block",
   "bypass_env": "CLAUDE_FORCE",
-  "message": "BLOCKED: NotebookEdit writing code cell without prior local_code_generate. Parallel of Write(.py) rule. Call local_code_generate first — FREE on GPU."
+  "message": "BLOCKED: NotebookEdit. Its payload arrives as 'new_source', but content_guard rules read 'content'/'new_string' only, so notebook cells are an unguarded write surface. Use the Write/Edit tool (full gate coverage), or dispatch an independent agent -- Agent(model:'opus') for hard work, Agent(model:'sonnet') for routine/bulk. Bypass (surgical, audit-logged): CLAUDE_FORCE=1.",
+  "status": "GPU-REQUIREMENT REMOVED 2026-09-12 (operator 2026-09-12: 'nie uzywamy juz gpu, wylaczylismy to, zamiast tego odpalamy opusa niezalezne okno... aktualizuj bramke, posprzataj'). Was require_prior_tool=mcp__local-ai__local_code_generate with a 'FREE on GPU' recovery. Same left-behind polyglot copy as its sibling. action=block UNCHANGED. Deprecate-in-place."
 }

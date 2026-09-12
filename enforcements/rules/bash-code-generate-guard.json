@@ -1,15 +1,15 @@
 {
   "name": "Bash Code-Gen Heredoc Guard",
-  "directive": "Writing code via Bash heredoc/redirect still requires local_code_generate",
+  "directive": "Code via Bash redirect bypasses the Write/Edit gate surface -> use Write/Edit or an independent agent (issue #29709).",
   "trigger": {
     "tool": "Bash",
     "args_filter": "(cat|tee|printf|echo|python3?|node)\\s*[^|&;]*>+\\s*['\"]?(?![^'\"\\s]*[/\\\\]\\.claude[/\\\\])[^'\"\\s]+\\.(py|js|ts|jsx|tsx|go|rs|java|c|cpp|h|sh|bash|rb|lua|ex|exs|kt|pine)(\\s|$|['\"]|`)"
   },
   "condition": {
-    "type": "require_prior_tool",
-    "tool": "mcp__local-ai__local_code_generate"
+    "type": "block_tool"
   },
   "action": "block",
   "bypass_env": "CLAUDE_FORCE",
-  "message": "BLOCKED: writing code via Bash redirect without prior local_code_generate. Closes the Write/Edit\u2192Bash bypass (issue #29709). Call mcp__local-ai__local_code_generate first — FREE on RTX 5090."
+  "message": "BLOCKED: writing code via a Bash redirect. This path skips the Write/Edit PreToolUse surface, so every content guard scoped to Write|Edit is silently bypassed (issue #29709). Use the Write/Edit tool (full gate coverage), or dispatch an independent agent -- Agent(model:'opus') for hard work, Agent(model:'sonnet') for routine/bulk. Bypass (surgical, audit-logged): CLAUDE_FORCE=1.",
+  "status": "GPU-REQUIREMENT REMOVED 2026-09-12 (operator 2026-09-12: 'nie uzywamy juz gpu, wylaczylismy to, zamiast tego odpalamy opusa niezalezne okno... aktualizuj bramke, posprzataj'). This POLYGLOT copy was left behind when the ~/.claude twin was flipped on 2026-07-13, so it kept action:block + require_prior_tool=mcp__local-ai__local_code_generate and a message advertising 'FREE on RTX 5090'. Measured today: it denied a live Bash call with that text while the fixed ~/.claude guard emitted the opposite advice in the same block -- the contradiction the operator reported. Now condition.block_tool; action=block UNCHANGED (the Write-bypass closure is the reason, not the GPU). Deprecate-in-place, nothing deleted."
 }
