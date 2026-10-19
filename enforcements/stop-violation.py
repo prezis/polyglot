@@ -18,7 +18,10 @@ LICENSE
 MIT.
 """
 from __future__ import annotations
+import codecs
+import itertools
 import json
+import locale
 import os
 import re
 import sys
@@ -39,6 +42,43 @@ _STATE_DIR = Path(
     or os.path.expanduser("~/.polyglot/state")
 )
 _COUNTER_FILE = _STATE_DIR / "stop-block-counter.json"
+
+
+def _reverse_lines(path, errors=None, block=1 << 20):
+    """The lines of ``Path(path).read_text(errors=errors).splitlines()``, newest first, read BACKWARDS from EOF in
+    ``block``-byte reads: a 774 MB transcript costs one block plus its longest line, not ~8x its size in RSS
+    (measured 2026-10-19: ~/ai/global-graph/research/2026-10-19-ram-architecture-review.md).
+
+    Exact, not approximate: a region that starts right after a b"\\n" byte starts a line and a UTF-8 character,
+    and splitlines(A + B) == splitlines(A) + splitlines(B) when A ends with that "\\n", so each region decoded and
+    split alone gives the same lines (text-mode newline translation changes no line's content). The file is
+    opened here, eagerly, so an unreadable path raises where read_text() raised. A non-UTF-8 locale falls back to
+    the whole read, unchanged."""
+    enc = locale.getpreferredencoding(False)
+    if codecs.lookup(enc).name != "utf-8":
+        return iter(reversed(Path(path).read_text(errors=errors).splitlines()))
+    errors = errors or "strict"
+    fh = open(path, "rb")
+    pos = os.fstat(fh.fileno()).st_size
+
+    def gen(fh=fh, pos=pos):
+        with fh:
+            after = []                         # undecoded bytes, in file order; they start mid-line
+            while pos > 0:
+                step = min(block, pos)
+                pos -= step
+                fh.seek(pos)
+                chunk = fh.read(step)
+                cut = chunk.find(b"\n")
+                if cut < 0:
+                    after.insert(0, chunk)
+                    continue
+                region = chunk[cut + 1:] + b"".join(after)
+                yield from reversed(region.decode(enc, errors).splitlines())
+                after = [chunk[:cut + 1]]
+            yield from reversed(b"".join(after).decode(enc, errors).splitlines())
+
+    return gen()
 
 
 def _load_counters() -> dict:
@@ -69,13 +109,13 @@ def _last_assistant_text(transcript_path: str) -> str:
     if not transcript_path or not Path(transcript_path).exists():
         return ""
     try:
-        lines = Path(transcript_path).read_text().splitlines()
+        lines = _reverse_lines(transcript_path)   # newest first, from EOF: no whole-file read
     except (IOError, OSError):
         return ""
 
     # Scan from the end — find the most recent assistant message.
     # Blocks WITHIN one message are in source order, so append (not prepend).
-    for line in reversed(lines[-200:]):
+    for line in itertools.islice(lines, 200):
         try:
             ev = json.loads(line)
         except json.JSONDecodeError:
